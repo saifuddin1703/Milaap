@@ -6,7 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -16,6 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -25,9 +26,9 @@ import com.example.cdgialumini.ui.directory.DirectoryPage
 import com.example.cdgialumini.ui.home.HomePage
 import com.example.cdgialumini.ui.messenging.MessagesPage
 import com.example.cdgialumini.ui.post.PostDetailPage
-import com.example.cdgialumini.ui.theme.AppThemeColor
 import com.example.cdgialumini.ui.theme.CDGIAluminiTheme
 import com.example.cdgialumini.ui.utils.BottomNavigationItems
+import kotlin.reflect.typeOf
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,15 +50,19 @@ class MainActivity : ComponentActivity() {
 
                     NavHost(navController = parentNavController, startDestination = startDestination){
                         composable("app"){
-                            CDGIAluminiApp()
+                            CDGIAluminiApp(parentNavController)
                         }
 
                         composable("login"){
-                            LoginPage()
+                            LoginPage(parentNavController)
                         }
 
-                        composable("postDetailPage"){
-                            PostDetailPage()
+                        composable("postDetailPage/{id}", arguments = listOf(
+                            navArgument(name = "id"){
+                                type = NavType.IntType
+                            }
+                        )){
+                            it.arguments?.getInt("id")?.let { it1 -> PostDetailPage(it1) }
                         }
                     }
                 }
@@ -69,7 +74,7 @@ class MainActivity : ComponentActivity() {
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CDGIAluminiApp(){
+fun CDGIAluminiApp(parentNavController: NavHostController) {
     var topBarTitle by remember{
         mutableStateOf("Home")
     }
@@ -106,12 +111,12 @@ fun CDGIAluminiApp(){
                                 0 ->{
                                     navController.navigate("home")
                                 }
-                                2 ->{
+                                1 ->{
                                     navController.navigate("directory")
                                 }
+                                2 ->{}
                                 3 ->{}
                                 4 ->{}
-                                5 ->{}
                             }
                         },
                         colors = NavigationBarItemDefaults.colors(
@@ -132,10 +137,10 @@ fun CDGIAluminiApp(){
     ) {
 
 
-        NavHost(navController = navController, startDestination = "home"){
+        NavHost(navController = navController, startDestination = "home",modifier = Modifier.padding(top = 70.dp)){
 
             composable("home"){
-               HomePage()
+               HomePage(parentNavController)
            }
 
             composable("directory"){
@@ -157,6 +162,6 @@ fun Greeting(name: String) {
 @Composable
 fun DefaultPreview() {
     CDGIAluminiTheme {
-        CDGIAluminiApp()
+        CDGIAluminiApp(rememberNavController())
     }
 }

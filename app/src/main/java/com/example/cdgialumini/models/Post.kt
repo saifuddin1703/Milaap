@@ -6,5 +6,6 @@ data class Post(
     val description : String = "",
     val imageURL : String = "",
     val likedBy : List<Long> = listOf(),
-    val comments : List<Comment> = listOf()
+    val comments : List<Comment> = listOf(),
+    val postedBy : Long = 0
 )

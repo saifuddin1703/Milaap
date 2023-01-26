@@ -24,16 +24,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cdgialumini.R
+import com.example.cdgialumini.data.posts
+import com.example.cdgialumini.data.users
+import com.example.cdgialumini.models.Post
 import com.example.cdgialumini.ui.home.Post
 import com.example.cdgialumini.ui.theme.AppGrayLight
 import com.example.cdgialumini.ui.theme.AppThemeColor
 
 @Composable
-fun PostDetailPage(){
+fun PostDetailPage(postid : Int){
+    val post = posts[postid]
+//    val user = users[post.postedBy.toInt()]
+
     Column(modifier = Modifier
         .fillMaxSize()
         .background(color = Color.White)) {
-        Post({},{},{},{})
+        Post(post,{},{},{},{})
 
         Box(modifier = Modifier.fillMaxWidth()){
             Text(text = "Comments",
@@ -179,5 +185,5 @@ fun CommentBoxPreview(){
 @Preview
 @Composable
 fun PostDetailPreview(){
-    PostDetailPage()
+    PostDetailPage(postid = 0)
 }
