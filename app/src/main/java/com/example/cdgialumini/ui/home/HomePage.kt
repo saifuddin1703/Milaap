@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterEnd
@@ -19,21 +20,27 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.cdgialumini.R
+import com.example.cdgialumini.data.posts
+import com.example.cdgialumini.data.users
+import com.example.cdgialumini.models.Post
 import com.example.cdgialumini.ui.components.ExpandableText
 import com.example.cdgialumini.ui.theme.AppGray
 import com.example.cdgialumini.ui.utils.PostActions
 
 @Composable
-fun HomePage(){
+fun HomePage(parentNavController: NavHostController){
 
     Column(modifier = Modifier
         .fillMaxSize()
         .background(color = AppGray)) {
 
         LazyColumn(){
-            items(10){
+            items(6){index->
                 Post(
+                    posts[index],
                     onLike = {
 
                     },
@@ -45,6 +52,9 @@ fun HomePage(){
                     },
                     onSave = {
 
+                    },
+                    onClick = {
+                        parentNavController.navigate("postDetailPage/$index")
                     }
                 )
             }
@@ -54,17 +64,22 @@ fun HomePage(){
 
 @Composable
 fun Post(
+    post: Post,
     onLike : ()->Unit,
     onComment : ()->Unit,
     onShare : ()->Unit,
     onSave : ()->Unit,
+    onClick : () -> Unit = {}
 ){
-
+    val user = users[post.postedBy.toInt()]
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(bottom = 10.dp)
 //        .height(464.dp)
         .background(color = Color.White)
+        .clickable {
+            onClick()
+        }
     ) {
 
         // Profile Details
@@ -84,14 +99,14 @@ fun Post(
                 .padding(top = 5.dp,start = 8.dp)
             ) {
                 Text(
-                    text = "Saifuddin Ahmed",
+                    text = user.username,
                     color = Color.Black,
                     fontWeight = FontWeight(700),
                     fontSize = 16.sp,
                 )
 
                 Text(
-                    text = "Student",
+                    text = user.userType.toString(),
                     color = Color.Black,
                     fontWeight = FontWeight(300),
                     fontSize = 15.sp,
@@ -109,11 +124,7 @@ fun Post(
 
         // Post details
         ExpandableText(
-            text = "Imagine. You roll out an offer to an engineer, they accept the offer! As you are inching closer to their date of joining, just a few days before, or even worse, right on their day of joining you get the dreaded message, \"I am sorry but I will not be able to join because of XYZ reason.\" \uD83E\uDD72\n" +
-                    "\n" +
-                    "We've all been there and we wanted to fix this and we did. So, the question remains, how did we do it?\n" +
-                    "\n" +
-                    "We are spilling the beans today ",
+            text = post.description,
             minimizedMaxLines = 3,
             modifier = Modifier
                 .padding(top = 10.dp, start = 10.dp,end = 10.dp),
@@ -129,13 +140,13 @@ fun Post(
             contentScale = ContentScale.Fit
         )
 
-        val likeCount = 124
-        val commentCount = 2
+        val likeCount = post.likedBy.size
+        val commentCount = post.comments.size
         Box(modifier = Modifier
             .fillMaxWidth()
             .height(40.dp)){
 
-            Text(text = "$likeCount likes",
+            Text(text = "$likeCount ${if(likeCount > 1) "likes" else "like"}",
                 fontSize = 17.sp,
                 fontWeight = FontWeight(300),
                 modifier = Modifier
@@ -143,7 +154,7 @@ fun Post(
                     .align(alignment = CenterStart)
             )
 
-            Text(text = "$commentCount comments",
+            Text(text = "$commentCount ${if(commentCount > 1) "likes" else "like"}",
                 fontSize = 17.sp,
                 fontWeight = FontWeight(300),
                 modifier = Modifier
@@ -176,17 +187,17 @@ fun Post(
                         .align(alignment = CenterVertically)
                         .clickable {
 //
-                            when (index){
-                                0->{
+                            when (index) {
+                                0 -> {
                                     onLike()
                                 }
-                                1->{
+                                1 -> {
                                     onComment()
                                 }
-                                2->{
+                                2 -> {
                                     onShare()
                                 }
-                                3->{
+                                3 -> {
                                     onSave()
                                 }
                             }
@@ -206,7 +217,7 @@ fun PostActions(name : String, icon : Int,modifier: Modifier){
                 .size(28.dp)
         )
         Text(text = name,
-            fontSize = 17.sp,
+            fontSize = 15.sp,
             fontWeight = FontWeight(300),
             modifier = Modifier
                 .align(alignment = CenterHorizontally)
@@ -222,11 +233,11 @@ fun ActionPreview(){
 @Preview
 @Composable
 fun HomePagePreview(){
-    HomePage()
+    HomePage(rememberNavController())
 }
 
 @Preview
 @Composable
 fun PostPreview(){
-    Post({},{},{},{})
+    Post(posts[0],{},{},{},{})
 }

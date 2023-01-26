@@ -8,7 +8,7 @@ data class User(
     val coverImage : String = "",
     val code : String = "",
     val userType : UserType = UserType.STUDENT,
-    val password : String = "",
+    val password : String = "12345",
     val tagline : String = "",
     val batch : Number = 2023
 )
