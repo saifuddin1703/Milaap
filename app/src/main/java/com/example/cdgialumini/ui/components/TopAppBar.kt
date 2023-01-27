@@ -22,7 +22,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.cdgialumini.R
+import com.example.cdgialumini.data.currentUser
 
 @Composable
 fun TopAppBar(title : String){
@@ -32,8 +34,10 @@ fun TopAppBar(title : String){
         .background(color = Color.White))
     {
         Row(modifier = Modifier.align(alignment = CenterStart)){
-            Image(
-                painter = painterResource(id = R.drawable.noun_profile_5178761),
+
+            AsyncImage(
+                model = currentUser.profileImage,
+                placeholder = painterResource(id = R.drawable.noun_profile_5178761),
                 contentDescription = "Profile",
                 modifier = Modifier
                     .padding(start = 10.dp)

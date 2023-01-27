@@ -3,10 +3,10 @@ package com.example.cdgialumini.ui.directory
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
@@ -23,14 +23,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.cdgialumini.R
 import com.example.cdgialumini.data.alunmies
 import com.example.cdgialumini.data.currentUser
@@ -42,7 +42,7 @@ import com.example.cdgialumini.ui.theme.AppThemeColor
 import com.example.cdgialumini.ui.theme.TextGray
 
 @Composable
-fun DirectoryPage(){
+fun DirectoryPage(parentNavController: NavHostController) {
     Column(modifier = Modifier
         .fillMaxSize()
         .background(color = Color.White)
@@ -99,51 +99,57 @@ fun DirectoryPage(){
 
         when (selectedIndex){
             0->{
-                Alumnies()
+                Alumnies(){
+                    parentNavController.navigate("profile/${it}")
+                }
             }
 
             1->{
-                Faculties()
+                Faculties(){
+                    parentNavController.navigate("profile/${it}")
+                }
             }
 
             2->{
-                Students()
+                Students(){
+                    parentNavController.navigate("profile/${it}")
+                }
             }
         }
     }
 }
 
 @Composable
-fun Faculties(){
+fun Faculties(onClick : (id:Long) -> Unit){
     LazyColumn(modifier = Modifier.fillMaxSize()){
         items(faculties){faculty->
-            ProfileBox(user = faculty)
+            ProfileBox(user = faculty,onClick = onClick)
         }
     }
 
 }
 
 @Composable
-fun Alumnies(){
+fun Alumnies(onClick : (id:Long) -> Unit){
     LazyColumn(modifier = Modifier.fillMaxSize()){
         items(alunmies){ alumni->
-            ProfileBox(user = alumni)
+            ProfileBox(user = alumni,onClick = onClick)
         }
     }
 
 }
 
 @Composable
-fun Students(){
+fun Students(onClick : (id:Long) -> Unit){
     LazyColumn(modifier = Modifier.fillMaxSize()){
         items(users){ user->
-            ProfileBox(user = user)
+            ProfileBox(user = user,onClick = onClick)
         }
     }
 
 }
 @Composable
-fun ProfileBox(user : User){
+fun ProfileBox(user : User,onClick : (id:Long) -> Unit){
 
     val name = user.username
     val type = user.userType.name
@@ -152,14 +158,19 @@ fun ProfileBox(user : User){
     Box(modifier = Modifier
         .height(76.dp)
         .fillMaxWidth()
-        .background(color = Color.White)){
+        .background(color = Color.White)
+        .clickable {
+            onClick(user.id)
+        }){
 
         Row(modifier = Modifier
             .padding(13.dp)
             .align(alignment = Alignment.CenterStart)) {
 
             // Profile picture
-            Image(painter = painterResource(id = R.drawable.dp)
+            AsyncImage(
+                model = user.profileImage,
+                placeholder = painterResource(id = R.drawable.profile_icon)
                 , contentDescription = "ProfileImage",
             modifier = Modifier
                 .height(56.dp)
@@ -206,10 +217,12 @@ fun ProfileBox(user : User){
 @Composable
 @Preview
 fun ProfileBoxPreview(){
-    ProfileBox(currentUser)
+    ProfileBox(currentUser){
+
+    }
 }
 @Preview
 @Composable
 fun PagePreview(){
-    DirectoryPage()
+    DirectoryPage(rememberNavController())
 }

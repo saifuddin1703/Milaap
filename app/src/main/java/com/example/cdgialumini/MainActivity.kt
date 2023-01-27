@@ -20,15 +20,17 @@ import androidx.navigation.*
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.cdgialumini.data.currentUser
+import com.example.cdgialumini.data.users
 import com.example.cdgialumini.ui.auth.LoginPage
 import com.example.cdgialumini.ui.components.TopAppBar
 import com.example.cdgialumini.ui.directory.DirectoryPage
 import com.example.cdgialumini.ui.home.HomePage
 import com.example.cdgialumini.ui.messenging.MessagesPage
 import com.example.cdgialumini.ui.post.PostDetailPage
+import com.example.cdgialumini.ui.profile.ProfilePage
 import com.example.cdgialumini.ui.theme.CDGIAluminiTheme
 import com.example.cdgialumini.ui.utils.BottomNavigationItems
-import kotlin.reflect.typeOf
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +65,19 @@ class MainActivity : ComponentActivity() {
                             }
                         )){
                             it.arguments?.getInt("id")?.let { it1 -> PostDetailPage(it1) }
+                        }
+
+                        composable("profile/{id}", arguments = listOf(
+                            navArgument(name = "id"){
+                                type = NavType.LongType
+                            }
+                        )){
+                            it.arguments?.getLong("id")?.let { id->
+                                val user = users.find {user-> user.id == id  }
+                                if (user != null) {
+                                    ProfilePage(user = user)
+                                }
+                            }
                         }
                     }
                 }
@@ -116,7 +131,10 @@ fun CDGIAluminiApp(parentNavController: NavHostController) {
                                 }
                                 2 ->{}
                                 3 ->{}
-                                4 ->{}
+                                4 ->{
+
+                                    parentNavController.navigate("profile/${currentUser.id}")
+                                }
                             }
                         },
                         colors = NavigationBarItemDefaults.colors(
@@ -144,7 +162,7 @@ fun CDGIAluminiApp(parentNavController: NavHostController) {
            }
 
             composable("directory"){
-                DirectoryPage()
+                DirectoryPage(parentNavController)
             }
 
             composable("messages"){

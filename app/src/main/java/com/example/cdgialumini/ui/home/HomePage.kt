@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterEnd
@@ -13,6 +14,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterStart
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -22,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.cdgialumini.R
 import com.example.cdgialumini.data.posts
 import com.example.cdgialumini.data.users
@@ -55,6 +58,9 @@ fun HomePage(parentNavController: NavHostController){
                     },
                     onClick = {
                         parentNavController.navigate("postDetailPage/$index")
+                    },
+                    onProfileClick = {id->
+                        parentNavController.navigate("profile/${id}")
                     }
                 )
             }
@@ -69,7 +75,8 @@ fun Post(
     onComment : ()->Unit,
     onShare : ()->Unit,
     onSave : ()->Unit,
-    onClick : () -> Unit = {}
+    onClick : () -> Unit = {},
+    onProfileClick : (id : Long)-> Unit = {}
 ){
     val user = users[post.postedBy.toInt()]
     Column(modifier = Modifier
@@ -85,14 +92,21 @@ fun Post(
         // Profile Details
         Row(modifier = Modifier
             .fillMaxWidth()
-            .height(76.dp)) {
+            .height(76.dp)
+            .clickable {
+                onProfileClick(user.id)
+            }) {
 
-            Image(painter = painterResource(id = R.drawable.noun_profile_5178761),
+            AsyncImage(
+                model = user.profileImage,
+                placeholder = painterResource(id = R.drawable.noun_profile_5178761),
                 contentDescription = "profile icon",
             modifier = Modifier
                 .size(56.dp)
                 .padding(start = 10.dp)
                 .align(alignment = CenterVertically)
+                .clip(shape = CircleShape),
+                contentScale = ContentScale.Crop
             )
 
             Column(modifier = Modifier
@@ -132,7 +146,9 @@ fun Post(
             fontSize = 17.sp
         )
 
-        Image(painter = painterResource(id = R.drawable.post_image),
+        AsyncImage(
+            model = post.imageURL,
+            placeholder = painterResource(id = R.drawable.post_image),
             contentDescription = "Post Image",
             modifier = Modifier
                 .align(alignment = CenterHorizontally)

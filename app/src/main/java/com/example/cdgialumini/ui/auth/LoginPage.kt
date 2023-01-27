@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.cdgialumini.data.currentUser
+import com.example.cdgialumini.data.users
 import com.example.cdgialumini.ui.theme.AppThemeColor
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -86,19 +87,28 @@ fun LoginPage(navController: NavHostController) {
             OutlinedButton(
                 onClick = {
                         if(username.startsWith("0832") || username.startsWith("TM")) {
-                            if (password == currentUser.password){
-                                isWrongPassword = true
-                            }else{
-                                // navigate to home page
-                                // delay of 1.5 sec to be removed later
+                            val user = users.find {
+                                it.rollNumber == username
+                            }
+                            if (user != null){
+                                if (password != user.password){
+                                    isWrongPassword = true
+                                }else{
+                                    // navigate to home page
+                                    // delay of 1.5 sec to be removed later
 //                            coroutineScope.launch {
 //                                delay(1500)
-                                Log.d("TAG","clicked")
-                                isWrongPassword = false
-                                isWrongUsername = false
-                                navController.navigate("app")
+                                    Log.d("TAG","clicked")
+                                    isWrongPassword = false
+                                    isWrongUsername = false
+                                    currentUser = user
+                                    navController.navigate("app")
 //                            }
+                                }
+                            }else{
+                                isWrongUsername = true
                             }
+
                         }else
                             isWrongUsername = true
 
