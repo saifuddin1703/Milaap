@@ -2,6 +2,7 @@ package com.example.cdgialumini
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -31,7 +32,9 @@ import com.example.cdgialumini.ui.post.PostDetailPage
 import com.example.cdgialumini.ui.profile.ProfilePage
 import com.example.cdgialumini.ui.theme.CDGIAluminiTheme
 import com.example.cdgialumini.ui.utils.BottomNavigationItems
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,9 +51,9 @@ class MainActivity : ComponentActivity() {
                         mutableStateOf(false)
                     }
 
-                    val startDestination = if (isLoggedIn) "app" else "login"
+//                    val startDestination = if (isLoggedIn) "app" else "login"
 
-                    NavHost(navController = parentNavController, startDestination = startDestination){
+                    NavHost(navController = parentNavController, startDestination = "login"){
                         composable("app"){
                             CDGIAluminiApp(parentNavController)
                         }
@@ -90,6 +93,7 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CDGIAluminiApp(parentNavController: NavHostController) {
+    Log.d("HOME","home")
     var topBarTitle by remember{
         mutableStateOf("Home")
     }
@@ -132,7 +136,6 @@ fun CDGIAluminiApp(parentNavController: NavHostController) {
                                 2 ->{}
                                 3 ->{}
                                 4 ->{
-
                                     parentNavController.navigate("profile/${currentUser.id}")
                                 }
                             }
