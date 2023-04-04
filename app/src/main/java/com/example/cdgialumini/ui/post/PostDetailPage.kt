@@ -24,7 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.cdgialumini.R
-import com.example.cdgialumini.data.posts
 import com.example.cdgialumini.data.users
 import com.example.cdgialumini.models.Post
 import com.example.cdgialumini.ui.home.Post
@@ -33,7 +32,7 @@ import com.example.cdgialumini.ui.theme.AppThemeColor
 
 @Composable
 fun PostDetailPage(postid : Int){
-    val post = posts[postid]
+    val post = Post()
 //    val user = users[post.postedBy.toInt()]
 
     Column(modifier = Modifier

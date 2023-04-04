@@ -5,7 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.cdgialumini.retrofit.requestBodies.auth.LoginRequestBody
-import com.example.cdgialumini.retrofit.services.AuthService
+import com.example.cdgialumini.retrofit.requestBodies.auth.SetPasswordRequestBody
+import com.example.cdgialumini.retrofit.requestBodies.auth.SignupRequestBody
 import com.example.cdgialumini.ui.auth.AuthRepository
 import com.example.cdgialumini.ui.auth.uiState.LoginUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +18,9 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
     private val _uiState : MutableLiveData<LoginUIState> by lazy {
         MutableLiveData(LoginUIState(isLoading = false))
     }
+
+
+    suspend fun isLoggedIn() = authRepository.isLoggedIn()
 
     val uiState : LiveData<LoginUIState> = _uiState
 
@@ -32,17 +36,66 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
     ){
         try {
             val response = authRepository.login(loginRequestBody = LoginRequestBody(email, enrollmentId, password))
-            Log.d("TAG",response.token)
+            Log.d("TAG",response.toString())
             if (response.success) {
-//                _uiState.value = LoginUIState(isLoading = false, data = response.token)
-                success(response.token)
-                Log.d("TOKEN",response.token)
-                AuthRepository.token = response.token
+                authRepository.setToken(response.data?.token!!)
+                Log.d("DEBUG",response.data.toString())
+                response.data.token.let { success(it) }
             }else
                 error(response.message.toString())
 //                _uiState.value =  LoginUIState(isLoading = false, message = response.message)
 
         }catch (e : java.lang.Exception){
+            error(e.message.toString())
+            Log.d("ERROR",e.message.toString())
+            _uiState.value =  LoginUIState(isLoading = false, message = e.message)
+        }
+    }
+
+    suspend fun signup(
+        name : String,
+        email : String,
+        enrollmentId : String,
+        success:(sessionId : String) -> Unit,
+        error:(message : String) -> Unit
+    ){
+        try {
+            val response = authRepository.signup(signupRequestBody = SignupRequestBody(name = name,email = email, enrollmentId = enrollmentId))
+            Log.d("TAG",response.toString())
+            if (response.success) {
+                Log.d("DEBUG",response.data.toString())
+                response.data.sessionId.let { success(it) }
+            }else
+                error(response.message.toString())
+//                _uiState.value =  LoginUIState(isLoading = false, message = response.message)
+
+        }catch (e : java.lang.Exception){
+            error(e.message.toString())
+            Log.d("ERROR",e.message.toString())
+            _uiState.value =  LoginUIState(isLoading = false, message = e.message)
+        }
+    }
+
+    suspend fun setPassword(
+        email : String,
+        password : String,
+        sessionId : String,
+        success:(token : String) -> Unit,
+        error:(message : String) -> Unit
+    ){
+        try {
+            val response = authRepository.setPassword(setPasswordRequestBody = SetPasswordRequestBody(email = email, sessionId = sessionId, password = password))
+            Log.d("TAG",response.toString())
+            if (response.success) {
+                authRepository.setToken(response.data.token)
+                Log.d("DEBUG",response.data.toString())
+                response.data.token.let { success(it) }
+            }else
+                error(response.message.toString())
+//                _uiState.value =  LoginUIState(isLoading = false, message = response.message)
+
+        }catch (e : java.lang.Exception){
+            error(e.message.toString())
             Log.d("ERROR",e.message.toString())
             _uiState.value =  LoginUIState(isLoading = false, message = e.message)
         }

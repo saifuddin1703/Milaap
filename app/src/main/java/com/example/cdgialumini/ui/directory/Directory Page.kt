@@ -151,7 +151,7 @@ fun Students(onClick : (id:Long) -> Unit){
 @Composable
 fun ProfileBox(user : User,onClick : (id:Long) -> Unit){
 
-    val name = user.username
+    val name = user.email
     val type = user.userType.name
     val tagline = user.tagline
     

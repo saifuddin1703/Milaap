@@ -8,7 +8,7 @@ import com.example.cdgialumini.models.UserType
 //val user =
 var currentUser = User(
     id = 4,
-    username = "Sheikh Saifuddin Ahmed",
+    email = "Sheikh Saifuddin Ahmed",
     rollNumber = "0832CS191161",
     userType = UserType.STUDENT,
     profileImage = "https://media.licdn.com/dms/image/C4E03AQH9Zywy-6Fs0g/profile-displayphoto-shrink_400_400/0/1629989312990?e=1680134400&v=beta&t=bzV_TpEeR9fnvi7-cUosw9z15kwbd54yERUyW9UwqTQ",
@@ -44,7 +44,7 @@ var currentUser = User(
 val users = listOf(
     User(
         id = 1,
-        username = "Sarthak Vinchurkar",
+        email = "Sarthak Vinchurkar",
         rollNumber = "0832CS191155",
         userType = UserType.STUDENT,
         profileImage = "https://media.licdn.com/dms/image/D4D03AQHAQxTmE6PI9Q/profile-displayphoto-shrink_400_400/0/1664626672263?e=1680134400&v=beta&t=FnxescZoznVM4ZW4J-bdHKZQyuwHxCFblx9ZncEUF_M",
@@ -90,7 +90,7 @@ val users = listOf(
     ),
     User(
         id = 2,
-        username = "Rupesh Garhwal",
+        email = "Rupesh Garhwal",
         rollNumber = "0832CS191148",
         userType = UserType.STUDENT,
         profileImage = "https://media.licdn.com/dms/image/D4D35AQGW57C6LidTkQ/profile-framedphoto-shrink_400_400/0/1656330078689?e=1675436400&v=beta&t=dremIKvvfi4ZWH0zkzrk_mQEMT8D9XZYZopc18wjIUU",
@@ -124,7 +124,7 @@ val users = listOf(
     ),
     User(
         id = 3,
-        username = "Vaishali Mandloi",
+        email = "Vaishali Mandloi",
         rollNumber = "0832CS191188",
         userType = UserType.STUDENT,
         profileImage = "https://media.licdn.com/dms/image/D4E03AQFuA6JUAnfGQw/profile-displayphoto-shrink_400_400/0/1672484743933?e=1680134400&v=beta&t=NLht5kM73wWA655gd-cpiuw0h7FtfMRnN2laPY3ey7U",
@@ -144,7 +144,7 @@ val users = listOf(
     ),
     User(
         id = 4,
-        username = "Sheikh Saifuddin Ahmed",
+        email = "Sheikh Saifuddin Ahmed",
         rollNumber = "0832CS191161",
         userType = UserType.STUDENT,
         profileImage = "https://media.licdn.com/dms/image/C4E03AQH9Zywy-6Fs0g/profile-displayphoto-shrink_400_400/0/1629989312990?e=1680134400&v=beta&t=bzV_TpEeR9fnvi7-cUosw9z15kwbd54yERUyW9UwqTQ",
@@ -181,7 +181,7 @@ val users = listOf(
 val alunmies = listOf(
     User(
         id = 4,
-        username = "Sarthak Garhwal",
+        email = "Sarthak Garhwal",
         rollNumber = "0832CS181155",
         userType = UserType.ALUMNI,
         password = "123456789",
@@ -190,7 +190,7 @@ val alunmies = listOf(
     ),
     User(
         id = 5,
-        username = "Rupesh Vinchurkar",
+        email = "Rupesh Vinchurkar",
         rollNumber = "0832CS181148",
         userType = UserType.ALUMNI,
         password = "123456789",
@@ -199,7 +199,7 @@ val alunmies = listOf(
     ),
     User(
         id = 6,
-        username = "Vaishali Mandloi",
+        email = "Vaishali Mandloi",
         rollNumber = "0832CS181188",
         userType = UserType.ALUMNI,
         password = "123456789",
@@ -212,7 +212,7 @@ val alunmies = listOf(
 val faculties = listOf(
     User(
         id = 7,
-        username = "Sarthak Garhwal",
+        email = "Sarthak Garhwal",
         code = "TM501",
         userType = UserType.FACULTY,
         password = "123456789",
@@ -221,7 +221,7 @@ val faculties = listOf(
     ),
     User(
         id = 8,
-        username = "Rupesh Vinchurkar",
+        email = "Rupesh Vinchurkar",
         code = "TM502",
         userType = UserType.FACULTY,
         password = "123456789",
@@ -230,7 +230,7 @@ val faculties = listOf(
     ),
     User(
         id = 9,
-        username = "Vaishali Mandloi",
+        email = "Vaishali Mandloi",
         code = "TM502",
         userType = UserType.FACULTY,
         password = "123456789",

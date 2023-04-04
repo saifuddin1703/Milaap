@@ -38,7 +38,7 @@ fun MessagesPage(){
 
 @Composable
 fun MessageBox(user: User){
-        val name = user.username
+        val name = user.email
         val type = user.userType.name
         val message = "This is the last message"
 

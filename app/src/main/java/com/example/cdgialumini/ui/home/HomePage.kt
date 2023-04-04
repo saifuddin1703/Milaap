@@ -5,10 +5,15 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment.Companion.Center
 import androidx.compose.ui.Alignment.Companion.CenterEnd
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterStart
@@ -22,11 +27,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.example.cdgialumini.R
-import com.example.cdgialumini.data.posts
 import com.example.cdgialumini.data.users
 import com.example.cdgialumini.models.Post
 import com.example.cdgialumini.ui.components.ExpandableText
@@ -36,36 +41,55 @@ import com.example.cdgialumini.ui.utils.PostActions
 @Composable
 fun HomePage(parentNavController: NavHostController){
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(color = AppGray)) {
+    val viewModel : HomeViewModel = hiltViewModel()
 
-        LazyColumn(){
-            items(6){index->
-                Post(
-                    posts[index],
-                    onLike = {
+    val uiState = viewModel.uiState.observeAsState()
 
-                    },
-                    onComment = {
+    uiState.value?.data?.let {posts->
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .background(color = AppGray)) {
 
-                    },
-                    onShare = {
+            LazyColumn(){
+                items(posts){post->
+                    Post(
+                        post,
+                        onLike = {
 
-                    },
-                    onSave = {
+                        },
+                        onComment = {
 
-                    },
-                    onClick = {
-                        parentNavController.navigate("postDetailPage/$index")
-                    },
-                    onProfileClick = {id->
-                        parentNavController.navigate("profile/${id}")
-                    }
-                )
+                        },
+                        onShare = {
+
+                        },
+                        onSave = {
+
+                        },
+                        onClick = {
+//                            parentNavController.navigate("postDetailPage/$index")
+                        },
+                        onProfileClick = {id->
+                            parentNavController.navigate("profile/${id}")
+                        }
+                    )
+                }
             }
         }
     }
+
+    if(uiState.value?.isLoading!!){
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(color = AppGray)){
+
+            CircularProgressIndicator(modifier = Modifier.align(alignment = Center))
+        }
+    }
+    LaunchedEffect(key1 = true){
+        viewModel.getFeed()
+    }
+
 }
 
 @Composable
@@ -78,7 +102,7 @@ fun Post(
     onClick : () -> Unit = {},
     onProfileClick : (id : Long)-> Unit = {}
 ){
-    val user = users[post.postedBy.toInt()]
+    val user = users[0]
     Column(modifier = Modifier
         .fillMaxWidth()
         .padding(bottom = 10.dp)
@@ -113,7 +137,7 @@ fun Post(
                 .padding(top = 5.dp,start = 8.dp)
             ) {
                 Text(
-                    text = user.username,
+                    text = user.email,
                     color = Color.Black,
                     fontWeight = FontWeight(700),
                     fontSize = 16.sp,
@@ -137,17 +161,19 @@ fun Post(
         }
 
         // Post details
-        ExpandableText(
-            text = post.description,
-            minimizedMaxLines = 3,
-            modifier = Modifier
-                .padding(top = 10.dp, start = 10.dp,end = 10.dp),
-            fontWeight = FontWeight(400),
-            fontSize = 17.sp
-        )
+        post.text?.let {
+            ExpandableText(
+                text = it,
+                minimizedMaxLines = 3,
+                modifier = Modifier
+                    .padding(top = 10.dp, start = 10.dp,end = 10.dp),
+                fontWeight = FontWeight(400),
+                fontSize = 17.sp
+            )
+        }
 
         AsyncImage(
-            model = post.imageURL,
+            model = post.images[0],
             placeholder = painterResource(id = R.drawable.post_image),
             contentDescription = "Post Image",
             modifier = Modifier
@@ -156,8 +182,8 @@ fun Post(
             contentScale = ContentScale.Fit
         )
 
-        val likeCount = post.likedBy.size
-        val commentCount = post.comments.size
+        val likeCount = post.like?.count!!
+        val commentCount = post.comment?.count!!
         Box(modifier = Modifier
             .fillMaxWidth()
             .height(40.dp)){
@@ -255,5 +281,5 @@ fun HomePagePreview(){
 @Preview
 @Composable
 fun PostPreview(){
-    Post(posts[0],{},{},{},{})
+//    Post(posts[0],{},{},{},{})
 }

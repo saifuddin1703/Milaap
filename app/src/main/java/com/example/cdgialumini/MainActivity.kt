@@ -23,6 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cdgialumini.data.currentUser
 import com.example.cdgialumini.data.users
+import com.example.cdgialumini.ui.SplashScreen
 import com.example.cdgialumini.ui.auth.LoginPage
 import com.example.cdgialumini.ui.components.TopAppBar
 import com.example.cdgialumini.ui.directory.DirectoryPage
@@ -53,7 +54,11 @@ class MainActivity : ComponentActivity() {
 
 //                    val startDestination = if (isLoggedIn) "app" else "login"
 
-                    NavHost(navController = parentNavController, startDestination = "login"){
+                    NavHost(navController = parentNavController, startDestination = "splashScreen"){
+                        composable("splashScreen"){
+                            SplashScreen(parentNavController)
+                        }
+
                         composable("app"){
                             CDGIAluminiApp(parentNavController)
                         }
