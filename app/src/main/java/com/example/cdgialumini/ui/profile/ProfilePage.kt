@@ -43,7 +43,7 @@ fun ProfilePage(user : User){
 
         PhotoBox(profileImage = user.profileImage, coverImage = user.coverImage)
 
-        NameBox(name = user.username, tagline = user.tagline)
+        NameBox(name = user.email, tagline = user.tagline)
 
         AboutBox(content = user.about)
 

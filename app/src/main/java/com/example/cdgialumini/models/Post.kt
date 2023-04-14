@@ -17,18 +17,18 @@ data class Post (
 )
 
 data class Owner (
-    @SerializedName("entity" ) var entity : String? = null
+    @SerializedName("entity" ) var entity : User? = User()
 )
 data class Like (
-    @SerializedName("count"   ) var count   : Int?     = null,
-    @SerializedName("isLiked" ) var isLiked : Boolean? = null
+    @SerializedName("count"   ) var count   : Int?     = 0,
+    @SerializedName("isLiked" ) var isLiked : Boolean? = false
 )
 
 
 data class Comment (
-    @SerializedName("count" ) var count : Int? = null
+    @SerializedName("count" ) var count : Int? = 0
 )
 
 data class Bookmark (
-    @SerializedName("isBookmarked" ) var isBookmarked : Boolean? = null
+    @SerializedName("isBookmarked" ) var isBookmarked : Boolean? = false
 )

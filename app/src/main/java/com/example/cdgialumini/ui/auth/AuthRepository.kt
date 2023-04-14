@@ -3,6 +3,7 @@ package com.example.cdgialumini.ui.auth
 import android.content.Context
 import android.util.Log
 import com.example.cdgialumini.retrofit.requestBodies.auth.LoginRequestBody
+import com.example.cdgialumini.retrofit.requestBodies.auth.ResendotpRequestBody
 import com.example.cdgialumini.retrofit.requestBodies.auth.SetPasswordRequestBody
 import com.example.cdgialumini.retrofit.requestBodies.auth.SignupRequestBody
 import com.example.cdgialumini.retrofit.services.AuthService
@@ -35,6 +36,8 @@ class AuthRepository @Inject constructor(
     suspend fun signup(signupRequestBody: SignupRequestBody) = authService.signup(signupRequestBody)
 
     suspend fun setPassword(setPasswordRequestBody: SetPasswordRequestBody) = authService.setPassword(setPasswordRequestBody)
+
+    suspend fun resendOtp(resendotpRequestBody: ResendotpRequestBody) = authService.resentOTP(resendotpRequestBody)
 
     suspend fun isLoggedIn(): Boolean {
         val token = getToken()

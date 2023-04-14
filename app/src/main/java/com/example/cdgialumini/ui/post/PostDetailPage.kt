@@ -1,16 +1,20 @@
 package com.example.cdgialumini.ui.post
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.BottomCenter
 import androidx.compose.ui.Alignment.Companion.CenterVertically
@@ -23,33 +27,51 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.cdgialumini.R
-import com.example.cdgialumini.data.users
-import com.example.cdgialumini.models.Post
-import com.example.cdgialumini.ui.home.Post
+import com.example.cdgialumini.ui.home.HomeViewModel
+import com.example.cdgialumini.ui.post.Post
 import com.example.cdgialumini.ui.theme.AppGrayLight
 import com.example.cdgialumini.ui.theme.AppThemeColor
+import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PostDetailPage(postid : Int){
-    val post = Post()
+fun PostDetailPage(postid: String, parentNavController: NavHostController){
 //    val user = users[post.postedBy.toInt()]
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(color = Color.White)) {
-        Post(post,{},{},{},{})
+    val viewModel : HomeViewModel= hiltViewModel()
 
-        Box(modifier = Modifier.fillMaxWidth()){
-            Text(text = "Comments",
-            modifier = Modifier
-                .align(alignment = Alignment.CenterStart)
-                .padding(top = 5.dp, bottom = 5.dp, start = 15.dp),
-            fontWeight = FontWeight(500),
+    val scope = rememberCoroutineScope()
+    val postUIState by viewModel.postUiState.observeAsState()
+
+    if (postUIState?.isLoading == true){
+        // show loading
+        Box(modifier = Modifier.fillMaxSize()){
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .align(alignment = Alignment.Center)
+                    .padding(top = 5.dp, bottom = 5.dp, start = 15.dp)
+            )
+        }
+    }
+
+    if (postUIState?.message != null){
+        // show error
+        Box(modifier = Modifier.fillMaxSize()){
+            Text(text = "Error loading post",
+                modifier = Modifier
+                    .align(alignment = Alignment.Center)
+                    .padding(top = 5.dp, bottom = 5.dp, start = 15.dp),
+                fontWeight = FontWeight(500),
                 fontSize = 20.sp
             )
         }
+    }
 
+    postUIState?.data?.let {post->
         Box{
             LazyColumn(
                 modifier = Modifier
@@ -57,6 +79,51 @@ fun PostDetailPage(postid : Int){
                     .align(alignment = TopCenter)
                     .wrapContentHeight()
             ) {
+                item {
+                    Post(
+                        post,
+                        onLike = {
+                            scope.launch {
+                                viewModel.likePost(post.Id!!)
+                            }
+                        },
+                        onDislike = {
+                            scope.launch {
+                                viewModel.dislikePost(post.Id!!)
+                            }
+                        },
+                        onComment = {
+                        },
+                        onShare = {
+
+                        },
+                        onSave = {
+                            scope.launch {
+                                viewModel.savePost(post.Id!!)
+                            }
+                        },
+                        onUnSave = {
+                            scope.launch {
+                                viewModel.unSavePost(post.Id!!)
+                            }
+                        },
+                        onClick = {
+                        },
+                        onProfileClick = {id->
+                            parentNavController.navigate("profile/${id}")
+                        }
+                    )
+
+                    Box(modifier = Modifier.fillMaxWidth()){
+                        Text(text = "Comments",
+                            modifier = Modifier
+                                .align(alignment = Alignment.CenterStart)
+                                .padding(top = 5.dp, bottom = 5.dp, start = 15.dp),
+                            fontWeight = FontWeight(500),
+                            fontSize = 20.sp
+                        )
+                    }
+                }
                 items(5) {
                     CommentBox()
                 }
@@ -70,6 +137,11 @@ fun PostDetailPage(postid : Int){
             }
         }
     }
+
+    LaunchedEffect(key1 = true){
+        viewModel.getPostById(postid)
+    }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -110,8 +182,9 @@ fun PostCommentBox(modifier: Modifier,onPost : (comment : String)->Unit){
             color = AppThemeColor,
             fontWeight = FontWeight(600),
             fontSize = 19.sp,
-            modifier = Modifier.align(alignment = CenterVertically)
-                .clickable{
+            modifier = Modifier
+                .align(alignment = CenterVertically)
+                .clickable {
                     onPost(comment)
                 })
 
@@ -181,8 +254,9 @@ fun CommentBoxPreview(){
     CommentBox()
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview
 @Composable
 fun PostDetailPreview(){
-    PostDetailPage(postid = 0)
+    PostDetailPage(postid = "0", parentNavController = rememberNavController())
 }

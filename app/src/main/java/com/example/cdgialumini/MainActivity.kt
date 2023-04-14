@@ -1,10 +1,12 @@
 package com.example.cdgialumini
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,6 +27,8 @@ import com.example.cdgialumini.data.currentUser
 import com.example.cdgialumini.data.users
 import com.example.cdgialumini.ui.SplashScreen
 import com.example.cdgialumini.ui.auth.LoginPage
+import com.example.cdgialumini.ui.auth.SetPasswordPage
+import com.example.cdgialumini.ui.auth.SignupPage
 import com.example.cdgialumini.ui.components.TopAppBar
 import com.example.cdgialumini.ui.directory.DirectoryPage
 import com.example.cdgialumini.ui.home.HomePage
@@ -37,6 +41,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -67,12 +72,30 @@ class MainActivity : ComponentActivity() {
                             LoginPage(parentNavController)
                         }
 
-                        composable("postDetailPage/{id}", arguments = listOf(
-                            navArgument(name = "id"){
-                                type = NavType.IntType
+                        composable("signup"){
+                            SignupPage(parentNavController)
+                        }
+
+                        composable("setPassword/{email}/{sessionId}", arguments = listOf(
+                            navArgument(name = "email"){
+                                type = NavType.StringType
+                            },
+                            navArgument(name = "sessionId"){
+                                type = NavType.StringType
                             }
                         )){
-                            it.arguments?.getInt("id")?.let { it1 -> PostDetailPage(it1) }
+                            val email = it.arguments?.getString("email")
+                            val sessionId = it.arguments?.getString("sessionId")
+                            if (email != null && sessionId != null)
+                                SetPasswordPage(email = email, sessionId = sessionId,parentNavController)
+                        }
+
+                        composable("postDetailPage/{id}", arguments = listOf(
+                            navArgument(name = "id"){
+                                type = NavType.StringType
+                            }
+                        )){
+                            it.arguments?.getString("id")?.let { id -> PostDetailPage(id,parentNavController) }
                         }
 
                         composable("profile/{id}", arguments = listOf(
@@ -94,6 +117,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -184,6 +208,7 @@ fun Greeting(name: String) {
     Text(text = "Hello $name!")
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {

@@ -47,7 +47,7 @@ val users = listOf(
         email = "Sarthak Vinchurkar",
         rollNumber = "0832CS191155",
         userType = UserType.STUDENT,
-        profileImage = "https://media.licdn.com/dms/image/D4D03AQHAQxTmE6PI9Q/profile-displayphoto-shrink_400_400/0/1664626672263?e=1680134400&v=beta&t=FnxescZoznVM4ZW4J-bdHKZQyuwHxCFblx9ZncEUF_M",
+        profileImage = "https://media.licdn.com/dms/image/D4D03AQHAQxTmE6PI9Q/profile-displayphoto-shrink_800_800/0/1664626672263?e=1686182400&v=beta&t=CF_fve_DB3bjf1X2XKv0_gnfTV77mam-XLpn4YbmoIY",
         coverImage = "https://media.licdn.com/dms/image/D4D16AQHcLxW_b0F7sg/profile-displaybackgroundimage-shrink_350_1400/0/1667235186724?e=1680134400&v=beta&t=QmHnP4ykjWW40a2h43RBK1PkZ_kXB38V-nXK6qHD6Jw",
         about = "PC hardware/tech enthusiast. Gaming aficionado. Music producer.\n" +
                 "\n" +

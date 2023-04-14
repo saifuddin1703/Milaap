@@ -49,6 +49,10 @@ android {
 
 dependencies {
 
+    //lottie files
+
+    def lottieVersion = "6.0.0"
+    implementation "com.airbnb.android:lottie-compose:$lottieVersion"
 
     // paging dependencies
 //    def paging_version = "3.1.1"

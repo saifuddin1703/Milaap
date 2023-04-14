@@ -1,5 +1,6 @@
 package com.example.cdgialumini.ui.auth
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,12 +18,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.End
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.Placeholder
 import androidx.compose.ui.text.PlaceholderVerticalAlign
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
@@ -112,6 +115,39 @@ fun LoginPage(navController : NavHostController) {
                 isError = isWrongPassword,
                 maxLines = 1
             )
+
+            // a forgot password text
+            Text(
+                text = buildAnnotatedString {
+                    append("Forgot password? ")
+                    appendInlineContent("reset")
+                },
+                inlineContent = mapOf(
+                    "reset" to InlineTextContent(
+                        Placeholder(
+                            width = 50.sp,
+                            height = 20.sp,
+                            placeholderVerticalAlign = PlaceholderVerticalAlign.Center
+                        )
+                    ) {
+                        Text(
+                            text = "Reset",
+                            style = TextStyle(
+                                color = AppThemeColor,
+                                textDecoration = TextDecoration.Underline
+                            ),
+                            modifier = Modifier.clickable {
+                                navController.navigate("resetPassword")
+                            }
+                        )
+                    }
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .align(End),
+                fontSize = 14.sp
+            )
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedButton(
                 enabled = !isloading,
@@ -128,7 +164,7 @@ fun LoginPage(navController : NavHostController) {
                         isWrongUsername = true
 
                     coroutineScope.launch {
-//                        Log.d("TAG", "button clicked")
+                        Log.d("TAG", "button clicked")
 
                         isloading = true
                         viewModel.login(email, password, enrollmentId,
@@ -173,7 +209,17 @@ fun LoginPage(navController : NavHostController) {
 
                 Text(text = "Not signedup? ")
                 Spacer(modifier = Modifier.width(10.dp))
-                Text(text = "Signup", textDecoration = TextDecoration.Underline, color = Color.Blue)
+                Text(text = "Signup",
+                    textDecoration = TextDecoration.Underline,
+                    color = Color.Blue,
+                    modifier = Modifier.clickable {
+                        navController.navigate("signup"){
+                            popUpTo("login"){
+                                inclusive = true
+                            }
+                        }
+                    }
+                )
             }
         }
 

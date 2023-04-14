@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.cdgialumini.retrofit.requestBodies.auth.LoginRequestBody
+import com.example.cdgialumini.retrofit.requestBodies.auth.ResendotpRequestBody
 import com.example.cdgialumini.retrofit.requestBodies.auth.SetPasswordRequestBody
 import com.example.cdgialumini.retrofit.requestBodies.auth.SignupRequestBody
 import com.example.cdgialumini.ui.auth.AuthRepository
@@ -80,11 +81,12 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
         email : String,
         password : String,
         sessionId : String,
+        otp : String,
         success:(token : String) -> Unit,
         error:(message : String) -> Unit
     ){
         try {
-            val response = authRepository.setPassword(setPasswordRequestBody = SetPasswordRequestBody(email = email, sessionId = sessionId, password = password))
+            val response = authRepository.setPassword(setPasswordRequestBody = SetPasswordRequestBody(email = email, sessionId = sessionId, otp = otp, password = password))
             Log.d("TAG",response.toString())
             if (response.success) {
                 authRepository.setToken(response.data.token)
@@ -92,6 +94,30 @@ class AuthViewModel @Inject constructor(private val authRepository: AuthReposito
                 response.data.token.let { success(it) }
             }else
                 error(response.message.toString())
+//                _uiState.value =  LoginUIState(isLoading = false, message = response.message)
+
+        }catch (e : java.lang.Exception){
+            error(e.message.toString())
+            Log.d("ERROR",e.message.toString())
+            _uiState.value =  LoginUIState(isLoading = false, message = e.message)
+        }
+    }
+
+
+    suspend fun resendOTP(
+        email : String,
+        sessionId : String,
+        success:(message : String) -> Unit,
+        error:(message : String) -> Unit
+    ){
+        try {
+            val response = authRepository.resendOtp(resendotpRequestBody = ResendotpRequestBody(email = email, sessionId = sessionId))
+            Log.d("TAG",response.toString())
+            if (response.success) {
+                Log.d("DEBUG",response.message.toString())
+                success(response.message)
+            }else
+                error(response.message)
 //                _uiState.value =  LoginUIState(isLoading = false, message = response.message)
 
         }catch (e : java.lang.Exception){
